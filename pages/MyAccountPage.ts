@@ -1,44 +1,54 @@
-import {Page, Locator} from '@playwright/test';
-import { LogoutPage } from './LogoutPage';
+import { Page, Locator, expect } from '@playwright/test';
+import { LogoutPage } from './LogoutPage'; // Import LogoutPage if needed
 
 export class MyAccountPage {
-
     private readonly page: Page;
+    
+    // Locators using CSS selectors
+    private readonly msgHeading: Locator;
+    private readonly lnkLogout: Locator;
 
-    // declaring locators for elements on My Account page
-
-    private readonly logoutLink: Locator;
-    private readonly accountDashboardHeader: Locator;
-
-    //constructor to initialize the page and locators
     constructor(page: Page) {
         this.page = page;
-        this.logoutLink = page.locator('div.list-group a:last-child');
-        this.accountDashboardHeader = page.locator('h2:has-text("My Account")');
         
+        // Initialize locators with CSS selectors
+        this.msgHeading = page.locator('h2:has-text("My Account")');
+        this.lnkLogout = page.locator("text='Logout'").nth(1);
     }
 
-    //method to verify if user is on My Account page
-    async isAtMyAccountPage(): Promise<boolean> {
-        try{
-            return await this.accountDashboardHeader.isVisible();
-        }   
-        catch(error){
-            console.error('Error verifying My Account page:', error);
+    /**
+     * Verifies if My Account page is displayed
+     * @returns Promise<boolean> - Returns true if heading is visible
+     */
+    async isMyAccountPageExists(): Promise<boolean> {
+        try {
+            const isVisible = await this.msgHeading.isVisible();
+            return isVisible;
+        } catch (error) {
+            console.log(`Error checking My Account page heading visibility: ${error}`);
             return false;
         }
     }
 
-    //method to click on logout link
-    async clickOnLogout(): Promise<void> {
-        try{
-            await this.logoutLink.click();
-            new LogoutPage(this.page);
-
-        }catch(error){
-            console.error('Error clicking on Logout link:', error);
-            throw error;
+    /**
+     * Clicks on Logout link
+     * @returns Promise<LogoutPage> - Returns instance of LogoutPage
+     */
+    async clickLogout(): Promise<LogoutPage> {
+        try {
+            await this.lnkLogout.click();
+            return new LogoutPage(this.page);
+        } catch (error) {
+            console.log(`Unable to click Logout link: ${error}`);
+            throw error; // Re-throw the error to fail the test
         }
-        
+    }
+
+    /**
+     * Alternative method to return page exists using title
+     * @returns Promise<boolean> - Returns true if page title matches
+     */
+    async getPageTitle(): Promise<string> {
+        return (this.page.title());
     }
 }

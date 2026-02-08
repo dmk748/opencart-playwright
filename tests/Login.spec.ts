@@ -11,54 +11,50 @@
  */
 
 import { test, expect } from '@playwright/test';
-
 import { HomePage } from '../pages/HomePage';
 import { LoginPage } from '../pages/LoginPage';
 import { MyAccountPage } from '../pages/MyAccountPage';
 import { TestConfig } from '../test.config';
 
-// Global variables for use across tests
 let config: TestConfig;
 let homePage: HomePage;
 let loginPage: LoginPage;
 let myAccountPage: MyAccountPage;
 
-// Setup before each test
+// This hook runs before each test
 test.beforeEach(async ({ page }) => {
-    // Navigate to application URL
-    config = new TestConfig();
-    await page.goto(config.appUrl);
+  config = new TestConfig(); // Load config (URL, credentials)
+  await page.goto(config.appUrl); // Navigate to base URL
 
-    // Create page objects for use in tests
-    homePage = new HomePage(page);
-    loginPage = new LoginPage(page);
-    myAccountPage = new MyAccountPage(page);
+  // Initialize page objects
+  homePage = new HomePage(page);
+  loginPage = new LoginPage(page);
+  myAccountPage = new MyAccountPage(page);
 });
 
-// Teardown after each test
+// Optional cleanup after each test
 test.afterEach(async ({ page }) => {
-    await page.waitForTimeout(2000);
-    await page.close();
+  await page.close(); // Close browser tab (good practice in local/dev run)
 });
 
-// Test: Login with Valid Credentials
-test('Login with Valid Credentials', async () => {
 
-    // Navigate to Login page
-    await homePage.clickOnMyAccount();
-    await homePage.clickOnLogin();
+test('User login test @master @sanity @regression',async()=>{
 
-    //login with valid credentials
+    //Navigate to Login page via Home page
 
+    await homePage.clickMyAccount();
+    await homePage.clickLogin();
+
+    //Enter valid credentials and log in
     await loginPage.setEmail(config.email);
     await loginPage.setPassword(config.password);
-    await loginPage.clickLoginButton();
+    await loginPage.clickLogin();
 
-    //alternative way to login
-    //await loginPage.login(config.email, config.password);
+    //alternatevly
+    //await loginPage.login(config.email,config.password);
 
-    //verify successful login by checking presence of My Account page
+    //Verify successful login by checking 'My Account' page presence
+    const isLoggedIn=await myAccountPage.isMyAccountPageExists();
+    expect(isLoggedIn).toBeTruthy();
 
-    const isAtMyAccount =  await myAccountPage.isAtMyAccountPage();
-    expect(isAtMyAccount).toBeTruthy();
-});
+})

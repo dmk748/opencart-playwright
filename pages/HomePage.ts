@@ -1,70 +1,83 @@
-import {Page, Locator} from '@playwright/test';
+import { Page, expect, Locator } from '@playwright/test';
 
 export class HomePage {
-
-    //defining variables
     private readonly page: Page;
-    private readonly myAccountLink: Locator;
-    private readonly registerLink: Locator;
-    private readonly loginLink: Locator;
-    private readonly searchBox: Locator;
-    private readonly searchButton: Locator;
+    
+    // Locators
+    private readonly lnkMyAccount: Locator;
+    private readonly lnkRegister: Locator;
+    private readonly linkLogin: Locator;
+    private readonly txtSearchbox: Locator;
+    private readonly btnSearch: Locator;
 
-    //constructor
-    constructor(page: Page){
-        this.page=page;
-        this.myAccountLink=page.locator('span:has-text("My Account")');
-        this.registerLink=page.locator('a:has-text("Register")');
-        this.loginLink=page.locator('a:has-text("Login")');
-        this.searchBox=page.locator('input[placeholder="Search"]');
-        this.searchButton=page.locator('#search button[type="button"]');
+    constructor(page: Page) {
+        this.page = page;
+        
+        // Initialize locators
+        this.lnkMyAccount = page.locator('span:has-text("My Account")');
+        this.lnkRegister = page.locator('a:has-text("Register")');
+        this.linkLogin = page.locator('a:has-text("Login")');
+        this.txtSearchbox = page.locator('input[placeholder="Search"]');
+        this.btnSearch = page.locator('#search button[type="button"]');
     }
 
-    //action methods
-
-    //check home page available or not 
-    async isHomePageDisplayed(){
-        let title=await this.page.title();
-        return title? true : false;
+    // Check if HomePage exists
+    async isHomePageExists(){
+        let title:string = await this.page.title();
+        if(title)
+        {
+            return true;
+        }
+        return false;
     }
 
-    //click on My Account link
-    async clickOnMyAccount(){
-        try{
-            await this.myAccountLink.click();
-        }catch(error){
-            console.error("Error clicking on My Account link: ", error);
+    // Click "My Account" link
+    async clickMyAccount(){
+        try {
+            await this.lnkMyAccount.click();
+        } catch (error) {
+            console.log(`Exception occurred while clicking 'My Account': ${error}`);
+            throw error;
         }
     }
 
-    //click on Register link
-    async clickOnRegister(){
-        try{
-            await this.registerLink.click();
-        }catch(error){
-            console.error("Error clicking on Register link: ", error);
+    // Click "Register" link
+    async clickRegister(){
+        try {
+            await this.lnkRegister.click();
+        } catch (error) {
+            console.log(`Exception occurred while clicking 'Register': ${error}`);
+            throw error;
         }
     }
 
-    //click on Login link
-    async clickOnLogin(){
-        try{
-            await this.loginLink.click();
-        }catch(error){
-            console.error("Error clicking on Login link: ", error);
+    // Click "Login" link
+    async clickLogin(){
+        try {
+            await this.linkLogin.click();
+        } catch (error) {
+            console.log(`Exception occurred while clicking 'Login': ${error}`);
+            throw error;
         }
     }
 
-    //search for a product
-    async searchProduct(productName: string){
-        try{
-            await this.searchBox.clear();
-            await this.searchBox.fill(productName);
-            await this.searchButton.click();
-        }catch(error){
-            console.error("Error searching for product: ", error);
+    // Enter product name in the search box
+    async enterProductName(pName: string){
+        try {
+            await this.txtSearchbox.fill(pName);
+        } catch (error) {
+            console.log(`Exception occurred while entering product name: ${error}`);
+            throw error;
         }
     }
 
-
+    // Click the search button
+    async clickSearch(){
+        try {
+            await this.btnSearch.click();
+        } catch (error) {
+            console.log(`Exception occurred while clicking 'Search': ${error}`);
+            throw error;
+        }
+    }
 }

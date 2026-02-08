@@ -1,51 +1,67 @@
-import { test, expect } from '@playwright/test';
+/**
+ * Test Case: Account Registration
+ * 
+ * Tags: @master @sanity @regression
+ * 
+ * Steps:
+ * 1) Navigate to application URL 
+ * 2) Go to 'My Account' and click 'Register'
+ * 3) Fill in registration details with random data
+ * 4) Agree to Privacy Policy and submit the form
+ * 5) Validate the confirmation message
+ */
 
+import { test, expect } from '@playwright/test';
 import { HomePage } from '../pages/HomePage';
-import { RegisterationPage } from '../pages/RegestrationPage';
-import { LoginPage } from '../pages/LoginPage';
-import { RandomDataGenerator } from '../utils/randomDataGenerator';
+import { RegistrationPage } from '../pages/RegistrationPage';
+import { RandomDataUtil } from '../utils/randomDataGenerator';
 import { TestConfig } from '../test.config';
 
-//making variables to be used across tests by declaring them globally
-let config: TestConfig;
 let homePage: HomePage;
-let registerationPage: RegisterationPage;
-let loginPage: LoginPage;
+let registrationPage: RegistrationPage;
+let config: TestConfig;
 
 test.beforeEach(async ({ page }) => {
-    //navigate to application url
     config = new TestConfig();
-    await page.goto(config.appUrl);
-
-    //create page objects to be used in before each test
+    await page.goto(config.appUrl); //Navigate to application URL 
     homePage = new HomePage(page);
-    registerationPage = new RegisterationPage(page);
-    loginPage = new LoginPage(page);
-});
+    registrationPage = new RegistrationPage(page);
+
+})
+
 
 test.afterEach(async ({ page }) => {
-    await page.waitForTimeout(2000);
+
+    await page.waitForTimeout(3000);
     await page.close();
-});
 
-test('Account Registration Test', async () => {
+})
 
-    //click on register link
-    await homePage.clickOnMyAccount();
-    await homePage.clickOnRegister();
 
-    //fill registration form
-    await registerationPage.setFirstName(RandomDataGenerator.getFirstName());
-    await registerationPage.setLastName(RandomDataGenerator.getLastName());
-    await registerationPage.setEmail(RandomDataGenerator.getEmail());
-    await registerationPage.setTelephone(RandomDataGenerator.getPhoneNumber());
-    const password = RandomDataGenerator.getRandomPassword(12);
-    await registerationPage.setPassword(password);
-    await registerationPage.setConfirmPassword(password);
-    await registerationPage.agreeToPrivacyPolicy();
-    await registerationPage.clickOnContinue();
+test('User registration test @master @sanity @regression', async () => {
 
-    //assert confirmation message
-    const confirmationMessage = await registerationPage.getConfirmationMessage();
-    expect(confirmationMessage).toContain('Your Account Has Been Created!');
-});
+    //Go to 'My Account' and click 'Register'
+
+    await homePage.clickMyAccount();
+    await homePage.clickRegister();
+
+    //Fill in registration details with random data
+    await registrationPage.setFirstName(RandomDataUtil.getFirstName());
+    await registrationPage.setLastName(RandomDataUtil.getlastName());
+    await registrationPage.setEmail(RandomDataUtil.getEmail());
+    await registrationPage.setTelephone(RandomDataUtil.getPhoneNumber());
+
+    const password = RandomDataUtil.getPassword();
+    await registrationPage.setPassword(password);
+    await registrationPage.setConfirmPassword(password);
+
+    await registrationPage.setPrivacyPolicy();
+    await registrationPage.clickContinue();
+
+    //Validate the confirmation message
+
+    const confirmationMsg = await registrationPage.getConfirmationMsg();
+    expect(confirmationMsg).toContain('Your Account Has Been Created!')
+
+
+})
