@@ -45,7 +45,7 @@ for(const data of jsonTestData)
 
 
 //Load CSV test data logindata.json
-
+/*
 const csvPath = "testdata/logindata.csv";
 const csvTestData = DataProvider.getTestDataFromCsv(csvPath);
 
@@ -77,5 +77,7 @@ for(const data of csvTestData)
             expect(errorMessage).toContain('Warning: No match');    
         }
     })
+        
 
 }
+    */

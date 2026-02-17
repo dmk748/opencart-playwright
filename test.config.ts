@@ -4,7 +4,7 @@ export class TestConfig{
     appUrl="https://tutorialsninja.com/demo/"
 
     //valid login credentials- create your own login account 
-    email="mukhavar1729@gmail.com" 
+    email="admin123@faker.com" 
     password="admin@123" 
 
      
